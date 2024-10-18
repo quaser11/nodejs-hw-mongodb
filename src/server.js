@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-import {getAllStudents, getStudentById} from "./services/students.js";
+import {getAllContacts, getContactById} from "./services/students.js";
 import mongoose from 'mongoose';
 
 export const setupServer = () => {
@@ -18,8 +18,8 @@ export const setupServer = () => {
         }),
     );
 
-    app.get('/students', async (req, res) => {
-        const students = await getAllStudents();
+    app.get('/contacts', async (req, res) => {
+        const students = await getAllContacts();
 
         res.status(200).json({
             status: 200,
@@ -28,29 +28,29 @@ export const setupServer = () => {
         })
     })
 
-    app.get('/students/:id', async (req, res) => {
+    app.get('/contacts/:id', async (req, res) => {
         const {id} = req.params;
 
         if (!mongoose.Types.ObjectId.isValid(id)) {
             return res.status(404).json({
                 status: 404,
-                message: 'Student not found'
+                message: 'Contact not found'
             })
         }
 
-        const student = await getStudentById(id);
+        const contact = await getContactById(id);
 
-        if (!student) {
+        if (!contact) {
             return res.status(404).json({
                 status: 404,
-                message: 'Student not found'
+                message: 'Contact not found'
             })
         }
 
         res.status(200).json({
             status: 200,
-            message: "Successfully found contact with id {contactId}!",
-            data: student
+            message: `Successfully found contact with id ${id}!`,
+            data: contact
         })
     })
 
