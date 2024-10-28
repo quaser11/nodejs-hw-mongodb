@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-import {getAllContacts, getContactById} from "./services/students.js";
+import {getAllContacts, getContactById} from "./services/contacts.js";
 import mongoose from 'mongoose';
 
 export const setupServer = () => {
