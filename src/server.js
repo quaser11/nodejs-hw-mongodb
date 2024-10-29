@@ -1,8 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import pino from 'pino-http';
-import {getAllContacts, getContactById} from "./services/contacts.js";
-import mongoose from 'mongoose';
+import {
+    createContactController, deleteContactController,
+    getAllContactsController,
+    getContactByIdController, patchContactController,
+    upsertContactController
+} from "./controllers/contacts.js";
+import {notFoundHandler} from "./middlewares/notFoundHandler.js";
+import {errorHandler} from "./middlewares/errorHandler.js";
 
 export const setupServer = () => {
     const PORT = process.env.PORT || 3000;
@@ -18,47 +24,25 @@ export const setupServer = () => {
         }),
     );
 
-    app.get('/contacts', async (req, res) => {
-        const contacts = await getAllContacts();
+    app.use(express.json({
+        type: ['application/json', 'application/vnd.api+json'],
+    }))
 
-        res.status(200).json({
-            status: 200,
-            message: "Successfully found contacts!",
-            data: contacts
-        })
-    })
+    app.get('/contacts', getAllContactsController)
 
-    app.get('/contacts/:id', async (req, res) => {
-        const {id} = req.params;
+    app.get('/contacts/:id', getContactByIdController)
 
-        if (!mongoose.Types.ObjectId.isValid(id)) {
-            return res.status(404).json({
-                status: 404,
-                message: 'Contact not found'
-            })
-        }
+    app.post('/contacts', createContactController)
 
-        const contact = await getContactById(id);
+    app.put('/contacts/:id', upsertContactController)
 
-        if (!contact) {
-            return res.status(404).json({
-                status: 404,
-                message: 'Contact not found'
-            })
-        }
+    app.patch('/contacts/:id', patchContactController)
 
-        res.status(200).json({
-            status: 200,
-            message: `Successfully found contact with id ${id}!`,
-            data: contact
-        })
-    })
+    app.delete('/contacts/:id', deleteContactController)
 
-    app.use((req, res) => {
-        res.status(404).send({
-            error: 'Not Found',
-        });
-    })
+    app.use('*', notFoundHandler)
+
+    app.use(errorHandler)
 
     app.listen(PORT, () => {
         console.log(`Server started on port ${PORT}`);
