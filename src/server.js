@@ -9,6 +9,7 @@ import {
 } from "./controllers/contacts.js";
 import {notFoundHandler} from "./middlewares/notFoundHandler.js";
 import {errorHandler} from "./middlewares/errorHandler.js";
+import {isValidId} from "./middlewares/isValidId.js";
 
 export const setupServer = () => {
     const PORT = process.env.PORT || 3000;
@@ -30,15 +31,15 @@ export const setupServer = () => {
 
     app.get('/contacts', getAllContactsController)
 
-    app.get('/contacts/:id', getContactByIdController)
+    app.get('/contacts/:id', isValidId, getContactByIdController)
 
     app.post('/contacts', createContactController)
 
-    app.put('/contacts/:id', upsertContactController)
+    app.put('/contacts/:id', isValidId, upsertContactController)
 
-    app.patch('/contacts/:id', patchContactController)
+    app.patch('/contacts/:id', isValidId,  patchContactController)
 
-    app.delete('/contacts/:id', deleteContactController)
+    app.delete('/contacts/:id', isValidId, deleteContactController)
 
     app.use('*', notFoundHandler)
 

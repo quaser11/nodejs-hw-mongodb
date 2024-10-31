@@ -2,6 +2,7 @@ import {creatContact, getAllContacts, getContactById, updateContact, deleteConta
 import mongoose from "mongoose";
 import createHttpError from 'http-errors';
 import {ctrlWrapper} from "../utils/ctrlWrapper.js";
+import {isValidId} from "../middlewares/isValidId.js";
 
 export const getAllContactsController = ctrlWrapper(async (req, res) => {
     const contacts = await getAllContacts();
