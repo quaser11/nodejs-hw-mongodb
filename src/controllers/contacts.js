@@ -1,28 +1,26 @@
 import {creatContact, getAllContacts, getContactById, updateContact, deleteContact} from "../services/contacts.js";
-import mongoose from "mongoose";
 import createHttpError from 'http-errors';
 import {ctrlWrapper} from "../utils/ctrlWrapper.js";
-import {isValidId} from "../middlewares/isValidId.js";
+import {parsePaginationParams} from "../utils/parsePaginationParams.js";
+import {parseSortParams} from "../utils/parseSortParams.js";
+import {parseFilterParams} from "../utils/parseFilterParams.js";
 
 export const getAllContactsController = ctrlWrapper(async (req, res) => {
-    const contacts = await getAllContacts();
+    const {page, perPage} = parsePaginationParams(req.query)
+    const {sortBy, sortOrder} = parseSortParams(req.query)
+    const filter = parseFilterParams(req.query)
+    console.log(filter)
+    const data = await getAllContacts({page, perPage, sortBy, sortOrder, filter});
 
     res.status(200).json({
         status: 200,
         message: "Successfully found contacts!",
-        data: contacts
+        data: data
     })
 })
 
 export const getContactByIdController = ctrlWrapper(async (req, res, next) => {
     const {id} = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(404).json({
-            status: 404,
-            message: 'Contact not found'
-        })
-    }
 
     const contact = await getContactById(id);
 

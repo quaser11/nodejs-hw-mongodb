@@ -10,6 +10,8 @@ import {
 import {notFoundHandler} from "./middlewares/notFoundHandler.js";
 import {errorHandler} from "./middlewares/errorHandler.js";
 import {isValidId} from "./middlewares/isValidId.js";
+import {upsertContactValidation} from "./middlewares/upsertContactValidation.js";
+import {patchContactValidation} from "./middlewares/patchContactValidation.js";
 
 export const setupServer = () => {
     const PORT = process.env.PORT || 3000;
@@ -33,11 +35,11 @@ export const setupServer = () => {
 
     app.get('/contacts/:id', isValidId, getContactByIdController)
 
-    app.post('/contacts', createContactController)
+    app.post('/contacts', upsertContactValidation, createContactController)
 
-    app.put('/contacts/:id', isValidId, upsertContactController)
+    app.put('/contacts/:id', isValidId, upsertContactValidation, upsertContactController)
 
-    app.patch('/contacts/:id', isValidId,  patchContactController)
+    app.patch('/contacts/:id', isValidId, patchContactValidation,  patchContactController)
 
     app.delete('/contacts/:id', isValidId, deleteContactController)
 
