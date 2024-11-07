@@ -9,8 +9,8 @@ export const getAllContactsController = ctrlWrapper(async (req, res) => {
     const {page, perPage} = parsePaginationParams(req.query)
     const {sortBy, sortOrder} = parseSortParams(req.query)
     const filter = parseFilterParams(req.query)
-    console.log(filter)
-    const data = await getAllContacts({page, perPage, sortBy, sortOrder, filter});
+    console.log(req.user)
+    const data = await getAllContacts({page, perPage, sortBy, sortOrder, filter, userId: req.user.id});
 
     res.status(200).json({
         status: 200,
@@ -22,7 +22,7 @@ export const getAllContactsController = ctrlWrapper(async (req, res) => {
 export const getContactByIdController = ctrlWrapper(async (req, res, next) => {
     const {id} = req.params;
 
-    const contact = await getContactById(id);
+    const contact = await getContactById(id, req.user.id);
 
     if (!contact) {
         throw createHttpError(404, "Contact not found")
@@ -36,7 +36,7 @@ export const getContactByIdController = ctrlWrapper(async (req, res, next) => {
 })
 
 export const createContactController = ctrlWrapper(async (req, res, next) => {
-    const contact = await creatContact(req.body)
+    const contact = await creatContact({...req.body, userId: req.user._id})
 
     if (!contact) {
       throw createHttpError(400, "Bad request")
@@ -52,7 +52,7 @@ export const createContactController = ctrlWrapper(async (req, res, next) => {
 export const upsertContactController = ctrlWrapper(async (req, res, next) => {
     const {id} = req.params
 
-    const result = await updateContact(id, req.body, {
+    const result = await updateContact(id, req.body, req.user._id, {
         upsert: true
     })
 

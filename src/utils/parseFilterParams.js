@@ -1,4 +1,4 @@
-import {filterSchemas} from "../schemas/validationSchemas.js";
+import {filterSchemas} from "../schemas/contactsValidationSchemas.js";
 
 export const parseFilterParams = (req) => {
     const {isFavourite, contactType} = req;

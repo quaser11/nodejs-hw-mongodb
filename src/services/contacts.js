@@ -1,7 +1,7 @@
 import {Contacts} from "../models/contacts.js";
 import {calculatePaginationData} from "../utils/calculatePaginationData.js";
 
-export const getAllContacts = async ({page, perPage, sortBy, sortOrder, filter}) => {
+export const getAllContacts = async ({page, perPage, sortBy, sortOrder, filter, userId}) => {
     const studentQuery = Contacts.find()
 
     if(filter.isFavourite){
@@ -12,7 +12,9 @@ export const getAllContacts = async ({page, perPage, sortBy, sortOrder, filter})
         studentQuery.where('contactType').equals(filter.contactType);
     }
 
-    const [total, contacts] = await Promise.all([Contacts.countDocuments(), studentQuery.skip(page > 0 ? (page - 1) * perPage : 0).limit(perPage).sort({
+    studentQuery.where('userId').equals(userId);
+
+    const [total, contacts] = await Promise.all([Contacts.countDocuments({userId}), studentQuery.skip(page > 0 ? (page - 1) * perPage : 0).limit(perPage).sort({
         [sortBy]: sortOrder
     })])
 
@@ -24,17 +26,18 @@ export const getAllContacts = async ({page, perPage, sortBy, sortOrder, filter})
     };
 }
 
-export const getContactById = async (contactId) => {
-    return Contacts.findById(contactId)
+export const getContactById = async (contactId, userId) => {
+    return Contacts.findOne({_id: contactId, userId})
 }
 
 export const creatContact = async (payload) => {
     return Contacts.create(payload)
 }
 
-export const updateContact = async (id, payload, options = {}) => {
+export const updateContact = async (id, payload, userId, options = {}) => {
     const rawResult = await Contacts.findOneAndUpdate({
         _id: id,
+        userId
     }, payload, {
         new: true,
         includeResultMetadata: true,

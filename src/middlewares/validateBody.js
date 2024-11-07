@@ -1,7 +1,5 @@
-import {upsertContactSchema} from "../schemas/validationSchemas.js";
-
-export const upsertContactValidation = (req, res, next) => {
-    const {error, value} = upsertContactSchema.validate(req.body, {
+export const validateBody = (schema) => (req, res, next) => {
+    const {error, value} = schema.validate(req.body, {
         abortEarly: false
     });
 
