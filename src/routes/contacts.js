@@ -6,8 +6,8 @@ import {
     upsertContactController
 } from "../controllers/contacts.js";
 import {isValidId} from "../middlewares/isValidId.js";
-import {upsertContactValidation} from "../middlewares/upsertContactValidation.js";
-import {patchContactValidation} from "../middlewares/patchContactValidation.js";
+import { validateBody} from "../middlewares/validateBody.js";
+import {patchContactSchema, upsertContactSchema} from "../schemas/validationSchemas.js";
 
 const router = new Router();
 
@@ -15,11 +15,11 @@ router.get('/', getAllContactsController)
 
 router.get('/:id', isValidId, getContactByIdController)
 
-router.post('/', upsertContactValidation, createContactController)
+router.post('/', validateBody(upsertContactSchema), createContactController)
 
-router.put('/:id', isValidId, upsertContactValidation, upsertContactController)
+router.put('/:id', isValidId, validateBody(upsertContactSchema), upsertContactController)
 
-router.patch('/:id', isValidId, patchContactValidation,  patchContactController)
+router.patch('/:id', isValidId, validateBody(patchContactSchema),  patchContactController)
 
 router.delete('/:id', isValidId, deleteContactController)
 
