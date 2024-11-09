@@ -31,3 +31,21 @@ export const loginSchema = Joi.object({
         'any.required': 'Password is required',
     }),
 })
+
+export const resetPasswordSchema = Joi.object({
+    email: Joi.string().email().required().messages({
+        'string.base': 'Email should be a string',
+        'string.email': 'Email is not valid',
+        'Any.required': 'The email is required',
+    })
+})
+
+export const resetPwdSchema = Joi.object({
+    token: Joi.string().required(),
+    password: Joi.string().min(3).max(25).required().messages({
+        'string.base': 'Password should be a string',
+        'string.min': 'Password should be least 3 characters',
+        'string.max': 'Password should be less than 25 characters',
+        'any.required': 'Password is required',
+    }),
+})

@@ -4,6 +4,9 @@ import {ctrlWrapper} from "../utils/ctrlWrapper.js";
 import {parsePaginationParams} from "../utils/parsePaginationParams.js";
 import {parseSortParams} from "../utils/parseSortParams.js";
 import {parseFilterParams} from "../utils/parseFilterParams.js";
+import {saveFileToUploadDir} from "../utils/saveFileToUploadDir.js";
+import {env} from "../utils/env.js";
+import {saveFileToCloudinary} from "../utils/saveFileToCloudinary.js";
 
 export const getAllContactsController = ctrlWrapper(async (req, res) => {
     const {page, perPage} = parsePaginationParams(req.query)
@@ -36,10 +39,20 @@ export const getContactByIdController = ctrlWrapper(async (req, res, next) => {
 })
 
 export const createContactController = ctrlWrapper(async (req, res, next) => {
-    const contact = await creatContact({...req.body, userId: req.user._id})
+    let fileUrl
+
+    if (req.file) {
+        if (env('ENABLE_CLOUDINARY') === 'true') {
+            fileUrl = await saveFileToCloudinary(req.file)
+        } else {
+            fileUrl = await saveFileToUploadDir(req.file, 'avatars')
+        }
+    }
+
+    const contact = await creatContact({...req.body, userId: req.user._id, avatar: fileUrl})
 
     if (!contact) {
-      throw createHttpError(400, "Bad request")
+        throw createHttpError(400, "Bad request")
     }
 
     res.status(201).json({
@@ -51,8 +64,17 @@ export const createContactController = ctrlWrapper(async (req, res, next) => {
 
 export const upsertContactController = ctrlWrapper(async (req, res, next) => {
     const {id} = req.params
+    let fileUrl
 
-    const result = await updateContact(id, req.body, req.user._id, {
+    if (req.file) {
+        if (env('ENABLE_CLOUDINARY') === 'true') {
+            fileUrl = await saveFileToCloudinary(req.file)
+        } else {
+            fileUrl = await saveFileToUploadDir(req.file, 'avatars')
+        }
+    }
+
+    const result = await updateContact(id, {...req.body, avatar: fileUrl}, req.user._id, {
         upsert: true
     })
 
@@ -65,14 +87,24 @@ export const upsertContactController = ctrlWrapper(async (req, res, next) => {
     res.status(status).json({
         status,
         message: "Successfully upserted a contact!",
-        data:result.contact
+        data: result.contact
     })
 })
 
 export const patchContactController = ctrlWrapper(async (req, res, next) => {
     const {id} = req.params
 
-    const result = await updateContact(id, req.body)
+    let fileUrl
+
+    if (req.file) {
+        if (env('ENABLE_CLOUDINARY') === 'true') {
+            fileUrl = await saveFileToCloudinary(req.file)
+        } else {
+            fileUrl = await saveFileToUploadDir(req.file, 'avatars')
+        }
+    }
+
+    const result = await updateContact(id, {...req.body, avatar: fileUrl}, req.user._id)
 
     if (!result) {
         throw createHttpError(404, "Contact not found")
@@ -91,7 +123,7 @@ export const deleteContactController = ctrlWrapper(async (req, res, next) => {
 
     const contact = await deleteContact(id)
 
-    if (!contact){
+    if (!contact) {
         throw createHttpError(404, "Contact not found")
     }
 

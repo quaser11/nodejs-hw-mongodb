@@ -1,5 +1,5 @@
 import {ctrlWrapper} from "../utils/ctrlWrapper.js";
-import {createUser, logoutUser, refreshUser} from "../services/auth.js";
+import {createUser, logoutUser, refreshUser, resetPwd, sendResetToken} from "../services/auth.js";
 import {loginUser} from "../services/auth.js";
 import createHttpError from "http-errors";
 
@@ -84,4 +84,24 @@ export const logoutController = ctrlWrapper(async (req, res) => {
     res.clearCookie("refreshToken")
 
     res.status(204).send()
+})
+
+export const sendResetTokenController = ctrlWrapper(async (req, res) => {
+    await sendResetToken({_id: req.user._id, email:req.user.email})
+
+    res.send({
+        status:200,
+        message: "Reset password email has been successfully sent.",
+        data: {}
+    })
+})
+
+export const resetPwdController = ctrlWrapper(async (req, res) => {
+    await resetPwd({token:req.body.token, password:req.body.password})
+
+    res.send({
+        status: 200,
+        message: "Password has been successfully reset.",
+        data: {}
+    })
 })
