@@ -39,7 +39,7 @@ export const createContactController = ctrlWrapper(async (req, res, next) => {
     const contact = await creatContact({...req.body, userId: req.user._id})
 
     if (!contact) {
-      throw createHttpError(400, "Bad request")
+        throw createHttpError(400, "Bad request")
     }
 
     res.status(201).json({
@@ -65,14 +65,14 @@ export const upsertContactController = ctrlWrapper(async (req, res, next) => {
     res.status(status).json({
         status,
         message: "Successfully upserted a contact!",
-        data:result.contact
+        data: result.contact
     })
 })
 
 export const patchContactController = ctrlWrapper(async (req, res, next) => {
     const {id} = req.params
 
-    const result = await updateContact(id, req.body)
+    const result = await updateContact(id, req.body, req.user._id)
 
     if (!result) {
         throw createHttpError(404, "Contact not found")
@@ -89,9 +89,9 @@ export const patchContactController = ctrlWrapper(async (req, res, next) => {
 export const deleteContactController = ctrlWrapper(async (req, res, next) => {
     const {id} = req.params
 
-    const contact = await deleteContact(id)
+    const contact = await deleteContact(id, req.user._id)
 
-    if (!contact){
+    if (!contact) {
         throw createHttpError(404, "Contact not found")
     }
 
