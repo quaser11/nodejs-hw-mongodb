@@ -121,7 +121,7 @@ export const patchContactController = ctrlWrapper(async (req, res, next) => {
 export const deleteContactController = ctrlWrapper(async (req, res, next) => {
     const {id} = req.params
 
-    const contact = await deleteContact(id)
+    const contact = await deleteContact(id, req.user._id)
 
     if (!contact) {
         throw createHttpError(404, "Contact not found")
