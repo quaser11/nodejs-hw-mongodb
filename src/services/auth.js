@@ -103,7 +103,7 @@ export const sendResetToken = async (payload) => {
             from: env('SMTP_FROM'),
             to: user.email,
             subject: 'Reset password',
-            html: html({link: `${env('HOST')}/reset-password?token=${resetToken}`})
+            html: html({link: `${env('HOST')}reset-password?token=${resetToken}`})
         })
     } catch (err) {
         throw new createHttpError(500, "Failed to send the email, please try again later.");
