@@ -8,6 +8,8 @@ import {env} from '../utils/env.js'
 import {sendEmail} from "../utils/emailSender.js";
 import * as fs from "node:fs";
 import Handlebars from "handlebars";
+import {getFullNameFromGoogleTokenPayload, validateCode} from "../utils/googleOAuth2.js";
+import randomBytes from "randombytes";
 
 const TEMPLATE = fs.readFileSync('src/templates/email.hbs', {encoding: 'utf-8'})
 
@@ -45,6 +47,34 @@ export const loginUser = async (paylaod) => {
     })
 }
 
+export const loginOrRegisterUserOAuth = async (code) => {
+    const loginTicket = await validateCode(code)
+    const payload = loginTicket.getPayload()
+    if(!payload) throw createHttpError(401, 'Unauthorized!')
+
+    const userFullName = getFullNameFromGoogleTokenPayload(payload)
+
+    let user = Users.findOne({email: payload.email})
+
+    if(!user){
+        const encryptedPassword = await bcrypt.hash(randomBytes(10, 10))
+        user = await Users.create({
+            email: payload.email,
+            password: encryptedPassword,
+            name: userFullName,
+            role: 'parent'
+        })
+    }
+
+    const newSession = createSession()
+
+    await Session.deleteOne({userId: user._id})
+
+    return Session.create({
+        userId: user._id,
+        ...newSession
+    })
+}
 export const refreshUser = async (payload) => {
     const session = await Session.findOne({_id: payload.sessionId})
 

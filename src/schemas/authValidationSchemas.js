@@ -49,3 +49,7 @@ export const resetPwdSchema = Joi.object({
         'any.required': 'Password is required',
     }),
 })
+
+export const googleOAuthCodeSchema = Joi.object({
+    code: Joi.string().required()
+})

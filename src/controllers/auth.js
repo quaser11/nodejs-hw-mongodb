@@ -1,7 +1,15 @@
 import {ctrlWrapper} from "../utils/ctrlWrapper.js";
-import {createUser, logoutUser, refreshUser, resetPwd, sendResetToken} from "../services/auth.js";
+import {
+    createUser,
+    loginOrRegisterUserOAuth,
+    logoutUser,
+    refreshUser,
+    resetPwd,
+    sendResetToken
+} from "../services/auth.js";
 import {loginUser} from "../services/auth.js";
 import createHttpError from "http-errors";
+import {generateGoogleOAuthUrl, getFullNameFromGoogleTokenPayload, validateCode} from "../utils/googleOAuth2.js";
 
 export const createUserController = ctrlWrapper(async (req, res) => {
     const user = {
@@ -27,7 +35,6 @@ export const loginUserController = ctrlWrapper(async (req, res) => {
 
     const session = await loginUser(user);
 
-    console.log(session._id)
     res.cookie("sessionId", session._id, {
         httpOnly: true,
         expires: new Date(Date.now() + 15 * 60 * 1000)
@@ -39,10 +46,40 @@ export const loginUserController = ctrlWrapper(async (req, res) => {
     })
 
     return res.status(200).send({
-        status:200,
+        status: 200,
         message: "Successfully logged in an user!",
         data: {
             accessToken: session.accessToken,
+        }
+    })
+})
+
+export const getGoogleAuthUrlController = ctrlWrapper(async (req, res) => {
+    const url = generateGoogleOAuthUrl()
+
+    res.send({
+        status: 200,
+        data: url
+    })
+})
+
+export const loginOrRegisterOAuthController = ctrlWrapper(async (req, res) => {
+    const session = loginOrRegisterUserOAuth(req.body)
+    res.cookie("sessionId", session._id, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 15 * 60 * 1000)
+    })
+
+    res.cookie('refreshToken', session.refreshToken, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 15 * 60 * 1000)
+    })
+
+    res.send({
+        status: 200,
+        message: "Successfully logged via Google OAuth!",
+        data: {
+            accessToken: session.accessToken
         }
     })
 })
@@ -65,7 +102,7 @@ export const refreshController = ctrlWrapper(async (req, res) => {
 
 
     res.status(200).send({
-        status:200,
+        status: 200,
         message: "Successfully refreshed a session!",
         data: {
             accessToken: session.accessToken
@@ -74,7 +111,7 @@ export const refreshController = ctrlWrapper(async (req, res) => {
 })
 
 export const logoutController = ctrlWrapper(async (req, res) => {
-    if(!req.cookies.sessionId){
+    if (!req.cookies.sessionId) {
         throw createHttpError(401, "Bad request")
     }
 
@@ -87,17 +124,17 @@ export const logoutController = ctrlWrapper(async (req, res) => {
 })
 
 export const sendResetTokenController = ctrlWrapper(async (req, res) => {
-    await sendResetToken({_id: req.user._id, email:req.user.email})
+    await sendResetToken({_id: req.user._id, email: req.user.email})
 
     res.send({
-        status:200,
+        status: 200,
         message: "Reset password email has been successfully sent.",
         data: {}
     })
 })
 
 export const resetPwdController = ctrlWrapper(async (req, res) => {
-    await resetPwd({token:req.body.token, password:req.body.password})
+    await resetPwd({token: req.body.token, password: req.body.password})
 
     res.send({
         status: 200,
@@ -105,3 +142,4 @@ export const resetPwdController = ctrlWrapper(async (req, res) => {
         data: {}
     })
 })
+
