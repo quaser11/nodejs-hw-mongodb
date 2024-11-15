@@ -12,7 +12,7 @@ export const getAllContactsController = ctrlWrapper(async (req, res) => {
     const {page, perPage} = parsePaginationParams(req.query)
     const {sortBy, sortOrder} = parseSortParams(req.query)
     const filter = parseFilterParams(req.query)
-    console.log(req.user)
+
     const data = await getAllContacts({page, perPage, sortBy, sortOrder, filter, userId: req.user.id});
 
     res.status(200).json({

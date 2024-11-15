@@ -1,0 +1,58 @@
+tags:
+  - Contacts
+summary: Get contact by id
+operationId: createContact
+description: 'Create contact'
+security:
+  - bearerAuth: [ ]
+requestBody:
+  content:
+    multipart:form-data:
+      schema:
+        type: object
+        $ref: ../../components/schemas/createStudent.yaml
+responses:
+  '201':
+    description: 'created contact'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: 'Successfully created contact with id ${id}!'
+            data:
+              type: object
+              _id:
+                description: "Contact's id"
+                type: string
+                example: 65e4decdd286b30065d54af9
+              $ref: '../../components/schemas/student.yaml'
+              createdAt:
+                description: "Date when contact created"
+                type: string
+                example: 2024-05-08T16:12:14.954187
+              updatedAt:
+                description: "Date when contact updated"
+                type: string
+                example: 2024-05-08T16:12:14.954189
+  '401':
+    description: 'Unauthorized'
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              $ref: "../../components/401.yaml"

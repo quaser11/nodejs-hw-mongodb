@@ -1,0 +1,121 @@
+  tags:
+    - Contacts
+  summary: Get all contacts
+  operationId: getAllContacts
+  description: Retrieve a paginated list of contacts with optional filters, sorting, and pagination.
+  parameters:
+    - in: query
+      name: page
+      schema:
+        type: integer
+        default: 1
+        minimum: 1
+      description: Page number for pagination
+    - in: query
+      name: perPage
+      schema:
+        type: integer
+        default: 10
+        minimum: 1
+      description: Number of contacts per page
+    - in: query
+      name: sortBy
+      schema:
+        type: string
+        enum: ["_id", "name"]
+        default: "_id"
+      description: Field to sort the contacts by
+    - in: query
+      name: sortOrder
+      schema:
+        type: string
+        enum: [asc, desc]
+        default: "asc"
+      description: "Order of sorting: ascending or descending"
+    - in: query
+      name: filter[isFavourite]
+      schema:
+        type: boolean
+      description: Filter by favourite status
+    - in: query
+      name: filter[contactType]
+      schema:
+        type: string
+        enum: [personal, business]
+      description: Filter by contact type
+    - in: query
+      name: userId
+      schema:
+        type: string
+      required: true
+      description: ID of the user owning the contacts
+  responses:
+    '200':
+      description: Successful response with paginated list of contacts
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - status
+              - message
+              - data
+              - total
+              - totalPages
+              - page
+              - perPage
+              - hasNextPage
+              - hasPrevPage
+            properties:
+              status:
+                type: number
+                example: 200
+              message:
+                type: string
+                example: Successfully found contacts!
+              data:
+                type: array
+                items:
+                  $ref: '../../components/schemas/student.yaml'
+              total:
+                type: integer
+                description: Total number of contacts for the user
+                example: 50
+              page:
+                type: integer
+                description: Current page number
+                example: 1
+              perPage:
+                type: integer
+                description: Number of contacts per page
+                example: 10
+              totalPages:
+                type: integer
+                description: Total number of pages
+                example: 5
+              sortBy:
+                type: string,
+                description: Sorted by name or _id
+                example: name
+              sortOrder:
+                type: string
+                description: Sorted by asceding or desceding
+                example: asc
+              hasNextPage:
+                type: boolean
+                example: true
+              hasPrevPage:
+                type: boolean
+                example: false
+    '401':
+      description: 'Unauthorized'
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - data
+            properties:
+              data:
+                type: object
+                $ref: "../../components/401.yaml"
