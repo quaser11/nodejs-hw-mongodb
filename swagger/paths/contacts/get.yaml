@@ -3,6 +3,8 @@
   summary: Get all contacts
   operationId: getAllContacts
   description: Retrieve a paginated list of contacts with optional filters, sorting, and pagination.
+  security:
+    - bearerAuth: [ ]
   parameters:
     - in: query
       name: page
@@ -33,22 +35,17 @@
         default: "asc"
       description: "Order of sorting: ascending or descending"
     - in: query
-      name: filter[isFavourite]
+      name: isFavourite
       schema:
         type: boolean
       description: Filter by favourite status
     - in: query
-      name: filter[contactType]
+      name: contactType
       schema:
         type: string
-        enum: [personal, business]
+        enum: [work, home, personal]
+        default: personal
       description: Filter by contact type
-    - in: query
-      name: userId
-      schema:
-        type: string
-      required: true
-      description: ID of the user owning the contacts
   responses:
     '200':
       description: Successful response with paginated list of contacts
@@ -93,14 +90,6 @@
                 type: integer
                 description: Total number of pages
                 example: 5
-              sortBy:
-                type: string,
-                description: Sorted by name or _id
-                example: name
-              sortOrder:
-                type: string
-                description: Sorted by asceding or desceding
-                example: asc
               hasNextPage:
                 type: boolean
                 example: true

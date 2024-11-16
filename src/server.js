@@ -6,12 +6,16 @@ import {notFoundHandler} from "./middlewares/notFoundHandler.js";
 import {errorHandler} from "./middlewares/errorHandler.js";
 import studentsRouter from "./routes/contacts.js";
 import authRouter from "./routes/auth.js";
-
+import swaggerDocument from '../docs/swagger.json' assert { type: 'json' };
+import swaggerUi from 'swagger-ui-express'
 export const setupServer = () => {
     const PORT = process.env.PORT || 3000;
     const app = express();
 
     app.use(cors());
+
+    app.use('/api-docs', swaggerUi.serve);
+    app.get('/api-docs', swaggerUi.setup(swaggerDocument));
 
     app.use(
         pino({
