@@ -26,12 +26,12 @@ router.post('/get-google-oauth-url', getGoogleAuthUrlController)
 
 router.post('/login-or-register-oauth', validateBody(googleOAuthCodeSchema), loginOrRegisterOAuthController)
 
-router.post('/refresh', authenticate, refreshController)
+router.post('/refresh', refreshController)
 
-router.post('/logout', authenticate, logoutController)
+router.post('/logout', logoutController)
 
-router.post('/send-reset-email', authenticate, validateBody(resetPasswordSchema), sendResetTokenController)
+router.post('/send-reset-email', validateBody(resetPasswordSchema), sendResetTokenController)
 
-router.post('/reset-pwd', authenticate, validateBody(resetPwdSchema), resetPwdController)
+router.post('/reset-pwd', validateBody(resetPwdSchema), resetPwdController)
 
 export default router;
