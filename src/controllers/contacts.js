@@ -45,11 +45,11 @@ export const createContactController = ctrlWrapper(async (req, res, next) => {
         if (env('ENABLE_CLOUDINARY') === 'true') {
             fileUrl = await saveFileToCloudinary(req.file)
         } else {
-            fileUrl = await saveFileToUploadDir(req.file, 'avatars')
+            fileUrl = await saveFileToUploadDir(req.file, 'photos')
         }
     }
 
-    const contact = await creatContact({...req.body, userId: req.user._id, avatar: fileUrl})
+    const contact = await creatContact({...req.body, userId: req.user._id, photo: fileUrl})
 
     if (!contact) {
         throw createHttpError(400, "Bad request")
@@ -70,11 +70,11 @@ export const upsertContactController = ctrlWrapper(async (req, res, next) => {
         if (env('ENABLE_CLOUDINARY') === 'true') {
             fileUrl = await saveFileToCloudinary(req.file)
         } else {
-            fileUrl = await saveFileToUploadDir(req.file, 'avatars')
+            fileUrl = await saveFileToUploadDir(req.file, 'photos')
         }
     }
 
-    const result = await updateContact(id, {...req.body, avatar: fileUrl}, req.user._id, {
+    const result = await updateContact(id, {...req.body, photo: fileUrl}, req.user._id, {
         upsert: true
     })
 
@@ -100,11 +100,11 @@ export const patchContactController = ctrlWrapper(async (req, res, next) => {
         if (env('ENABLE_CLOUDINARY') === 'true') {
             fileUrl = await saveFileToCloudinary(req.file)
         } else {
-            fileUrl = await saveFileToUploadDir(req.file, 'avatars')
+            fileUrl = await saveFileToUploadDir(req.file, 'photos')
         }
     }
 
-    const result = await updateContact(id, {...req.body, avatar: fileUrl}, req.user._id)
+    const result = await updateContact(id, {...req.body, photo: fileUrl}, req.user._id)
 
     if (!result) {
         throw createHttpError(404, "Contact not found")

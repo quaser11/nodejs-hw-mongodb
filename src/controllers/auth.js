@@ -124,7 +124,7 @@ export const logoutController = ctrlWrapper(async (req, res) => {
 })
 
 export const sendResetTokenController = ctrlWrapper(async (req, res) => {
-    await sendResetToken({_id: req.user._id, email: req.user.email})
+    await sendResetToken(req.body)
 
     res.send({
         status: 200,

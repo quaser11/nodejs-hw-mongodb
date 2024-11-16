@@ -111,7 +111,7 @@ export const authenticateUser = async (accessToken) => {
 
 export const sendResetToken = async (payload) => {
 
-    const user = await Users.findOne({_id: payload._id, email: payload.email})
+    const user = await Users.findOne({email: payload.email})
 
     if (!user) throw createHttpError(401, 'User not found!');
 

@@ -17,11 +17,11 @@ router.get('/', authenticate, getAllContactsController)
 
 router.get('/:id', authenticate, isValidId, getContactByIdController)
 
-router.post('/', authenticate, upload.single('avatar'), validateBody(upsertContactSchema), createContactController)
+router.post('/', authenticate, upload.single('photo'), validateBody(upsertContactSchema), createContactController)
 
-router.put('/:id', authenticate, isValidId, upload.single('avatar'), validateBody(upsertContactSchema), upsertContactController)
+router.put('/:id', authenticate, isValidId, upload.single('photo'), validateBody(upsertContactSchema), upsertContactController)
 
-router.patch('/:id', authenticate, isValidId, upload.single('avatar'), validateBody(patchContactSchema),  patchContactController)
+router.patch('/:id', authenticate, isValidId, upload.single('photo'), validateBody(patchContactSchema),  patchContactController)
 
 router.delete('/:id', authenticate, isValidId, deleteContactController)
 
