@@ -4,11 +4,11 @@ import {calculatePaginationData} from "../utils/calculatePaginationData.js";
 export const getAllContacts = async ({page, perPage, sortBy, sortOrder, filter, userId}) => {
     const studentQuery = Contacts.find()
 
-    if(filter.isFavourite){
+    if (filter.isFavourite) {
         studentQuery.where('isFavourite').equals(filter.isFavourite);
     }
 
-    if(filter.contactType){
+    if (filter.contactType) {
         studentQuery.where('contactType').equals(filter.contactType);
     }
 
@@ -38,7 +38,10 @@ export const updateContact = async (id, payload, userId, options = {}) => {
     const rawResult = await Contacts.findOneAndUpdate({
         _id: id,
         userId
-    }, payload, {
+    }, {
+        $set: payload,
+        $unset: {avatar: ''}
+    }, {
         new: true,
         includeResultMetadata: true,
         ...options,
