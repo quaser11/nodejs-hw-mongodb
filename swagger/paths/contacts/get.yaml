@@ -100,10 +100,6 @@
       description: 'Unauthorized'
       content:
         application/json:
-          schema:
-            type: object
-            required:
-              - data
             properties:
               data:
                 type: object

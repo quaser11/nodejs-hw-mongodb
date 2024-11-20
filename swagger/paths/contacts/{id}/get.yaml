@@ -49,10 +49,6 @@ responses:
     description: 'Contact not found'
     content:
       application/json:
-        schema:
-          type: object
-          required:
-            - data
           properties:
             data:
               type: object
@@ -61,10 +57,6 @@ responses:
     description: 'Unauthorized'
     content:
       application/json:
-        schema:
-          type: object
-          required:
-            - data
           properties:
             data:
               type: object

@@ -3,14 +3,15 @@
     - _id
     - name
     - phoneNumber
-    - email
-    - isFavourite
     - contactType
     - userId
-    - avatar
     - createdAt
     - updatedAt
   properties:
+    _id:
+      description: "Contact's _id"
+      type: string
+      example: 65e4decdd286b30065d54af9
     name:
       description: "Contact's name"
       type: string
@@ -37,7 +38,7 @@
       description: "Id of user which the contact belongs"
       type: string
       example: 65e4decdd286b30065d54af9
-    avatar:
-      description: "Link to contact's avatar"
+    photo:
+      description: "Link to contact's photo"
       type: string
       example: https://res.cloudinary.com/uqwgdu/image/upload/image.png

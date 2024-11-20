@@ -181,16 +181,10 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "data"
-                  ],
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/401"
-                    }
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "$ref": "../../components/401.yaml"
                   }
                 }
               }
@@ -202,7 +196,7 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Get contact by id",
+        "summary": "Create cotact",
         "operationId": "createContact",
         "description": "Create contact",
         "security": [
@@ -212,10 +206,52 @@
         ],
         "requestBody": {
           "content": {
-            "multipart:form-data": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
-                "$ref": "#/components/schemas/createStudent"
+                "required": [
+                  "name",
+                  "phoneNumber",
+                  "contactType"
+                ],
+                "properties": {
+                  "name": {
+                    "description": "Contact's name",
+                    "type": "string",
+                    "example": "John Doe"
+                  },
+                  "phoneNumber": {
+                    "description": "Contact's phone number",
+                    "type": "string",
+                    "example": 380000000006
+                  },
+                  "email": {
+                    "description": "Contact's email",
+                    "type": "string",
+                    "example": "andriy7@example.com"
+                  },
+                  "isFavourite": {
+                    "description": "is contact in favourite",
+                    "type": "boolean",
+                    "example": true,
+                    "default": false
+                  },
+                  "contactType": {
+                    "description": "Type of contact",
+                    "type": "string",
+                    "enum": [
+                      "work",
+                      "home",
+                      "personal"
+                    ],
+                    "default": "personal"
+                  },
+                  "photo": {
+                    "description": "Photo file",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
               }
             }
           }
@@ -230,7 +266,9 @@
                   "required": [
                     "status",
                     "message",
-                    "data"
+                    "data",
+                    "createdAt",
+                    "updatedAt"
                   ],
                   "properties": {
                     "status": {
@@ -248,17 +286,26 @@
                         "type": "string",
                         "example": "65e4decdd286b30065d54af9"
                       },
-                      "$ref": "#/components/schemas/student",
-                      "createdAt": {
-                        "description": "Date when contact created",
-                        "type": "string",
-                        "example": "2024-05-08T16:12:14.954187"
-                      },
-                      "updatedAt": {
-                        "description": "Date when contact updated",
-                        "type": "string",
-                        "example": "2024-05-08T16:12:14.954189"
-                      }
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/student"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "createdAt": {
+                              "description": "Date when contact created",
+                              "type": "string",
+                              "example": "2024-05-08T16:12:14.954187"
+                            },
+                            "updatedAt": {
+                              "description": "Date when contact updated",
+                              "type": "string",
+                              "example": "2024-05-08T16:12:14.954189"
+                            }
+                          }
+                        }
+                      ]
                     }
                   }
                 }
@@ -269,16 +316,10 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "data"
-                  ],
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/401"
-                    }
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "$ref": "../../components/401.yaml"
                   }
                 }
               }
@@ -360,16 +401,10 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "data"
-                  ],
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/401"
-                    }
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "$ref": "../../../components/401.yaml"
                   }
                 }
               }
@@ -379,16 +414,10 @@
             "description": "Contact not found",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "data"
-                  ],
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/404"
-                    }
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "$ref": "../../../components/schemas/404.yaml"
                   }
                 }
               }
@@ -427,16 +456,10 @@
             "description": "Unauthorized",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "data"
-                  ],
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/401"
-                    }
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "$ref": "../../../components/401.yaml"
                   }
                 }
               }
@@ -446,16 +469,123 @@
             "description": "Contact not found",
             "content": {
               "application/json": {
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "$ref": "../../../components/schemas/404.yaml"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "update cotact",
+        "operationId": "updateContact",
+        "description": "update contact",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "65ca67e7ae7f10c88b598384"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "New name",
+                    "type": "string",
+                    "example": "Ema Lawrence"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "created contact",
+            "content": {
+              "application/json": {
                 "schema": {
                   "type": "object",
                   "required": [
-                    "data"
+                    "status",
+                    "message",
+                    "data",
+                    "createdAt",
+                    "updatedAt"
                   ],
                   "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully patched a student!"
+                    },
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/404"
+                      "_id": {
+                        "description": "Contact's id",
+                        "type": "string",
+                        "example": "65e4decdd286b30065d54af9"
+                      },
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/student"
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "example": "Ema Lawrence"
+                            },
+                            "createdAt": {
+                              "description": "Date when contact created",
+                              "type": "string",
+                              "example": "2024-05-08T16:12:14.954187"
+                            },
+                            "updatedAt": {
+                              "description": "Date when contact updated",
+                              "type": "string",
+                              "example": "2024-05-08T16:12:14.954189"
+                            }
+                          }
+                        }
+                      ]
                     }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "$ref": "../../../components/401.yaml"
                   }
                 }
               }
@@ -473,83 +603,23 @@
       }
     },
     "schemas": {
-      "401": {
-        "type": "object",
-        "required": [
-          "status",
-          "message",
-          "data"
-        ],
-        "properties": {
-          "status": {
-            "type": "integer",
-            "example": 401
-          },
-          "message": {
-            "description": "Message about request",
-            "type": "string",
-            "example": "Unauthorized"
-          },
-          "data": {
-            "type": "object",
-            "required": [
-              "message"
-            ],
-            "properties": {
-              "message": {
-                "type": "string",
-                "example": "Unauthorized"
-              }
-            }
-          }
-        }
-      },
-      "404": {
-        "type": "object",
-        "required": [
-          "status",
-          "message",
-          "data"
-        ],
-        "properties": {
-          "status": {
-            "type": "integer",
-            "example": 404
-          },
-          "message": {
-            "description": "Message about request",
-            "type": "string",
-            "example": "Student not found"
-          },
-          "data": {
-            "type": "object",
-            "required": [
-              "message"
-            ],
-            "properties": {
-              "message": {
-                "type": "string",
-                "example": "Student not found"
-              }
-            }
-          }
-        }
-      },
       "student": {
         "type": "object",
         "required": [
           "_id",
           "name",
           "phoneNumber",
-          "email",
-          "isFavourite",
           "contactType",
           "userId",
-          "avatar",
           "createdAt",
           "updatedAt"
         ],
         "properties": {
+          "_id": {
+            "description": "Contact's _id",
+            "type": "string",
+            "example": "65e4decdd286b30065d54af9"
+          },
           "name": {
             "description": "Contact's name",
             "type": "string",
@@ -586,66 +656,10 @@
             "type": "string",
             "example": "65e4decdd286b30065d54af9"
           },
-          "avatar": {
-            "description": "Link to contact's avatar",
+          "photo": {
+            "description": "Link to contact's photo",
             "type": "string",
             "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
-          }
-        }
-      },
-      "createStudent": {
-        "type": "object",
-        "required": [
-          "_id",
-          "name",
-          "phoneNumber",
-          "userId",
-          "avatar",
-          "createdAt",
-          "updatedAt"
-        ],
-        "properties": {
-          "name": {
-            "description": "Contact's name",
-            "type": "string",
-            "example": "John Doe"
-          },
-          "phoneNumber": {
-            "description": "Contact's phone number",
-            "type": "string",
-            "example": 380000000006
-          },
-          "email": {
-            "description": "Contact's email",
-            "type": "string",
-            "example": "andriy7@example.com",
-            "default": null
-          },
-          "isFavourite": {
-            "description": "is contact in favourite",
-            "type": "boolean",
-            "example": true,
-            "default": false
-          },
-          "contactType": {
-            "description": "Type of contact",
-            "type": "string",
-            "enum": [
-              "work",
-              "home",
-              "personal"
-            ],
-            "default": "personal"
-          },
-          "userId": {
-            "description": "Id of user which the contact belongs",
-            "type": "string",
-            "example": "65e4decdd286b30065d54af9"
-          },
-          "avatar": {
-            "description": "Contact's avatar",
-            "type": "string",
-            "format": "binary"
           }
         }
       }

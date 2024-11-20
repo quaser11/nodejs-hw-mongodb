@@ -14,7 +14,6 @@ import {
     resetPasswordSchema,
     resetPwdSchema
 } from "../schemas/authValidationSchemas.js";
-import {authenticate} from "../middlewares/authenticate.js";
 
 const router = Router();
 

@@ -1,49 +1,29 @@
 tags:
   - Contacts
-summary: Create cotact
-operationId: createContact
-description: 'Create contact'
+summary: update cotact
+operationId: updateContact
+description: 'update contact'
 security:
   - bearerAuth: [ ]
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+      example: 65ca67e7ae7f10c88b598384
 requestBody:
   content:
     multipart/form-data:
       schema:
         type: object
-        required:
-          - name
-          - phoneNumber
-          - contactType
         properties:
           name:
-            description: "Contact's name"
+            description: New name
             type: string
-            example: John Doe
-          phoneNumber:
-            description: "Contact's phone number"
-            type: string
-            example: +380000000006
-          email:
-            description: "Contact's email"
-            type: string
-            example: andriy7@example.com
-          isFavourite:
-            description: "is contact in favourite"
-            type: boolean
-            example: true
-            default: false
-          contactType:
-            description: "Type of contact"
-            type: string
-            enum: [ 'work', 'home', 'personal' ]
-            default: 'personal'
-          photo:
-            description: "Photo file"
-            type: string
-            format: binary
-
+            example: "Ema Lawrence"
 responses:
-  '201':
+  '200':
     description: 'created contact'
     content:
       application/json:
@@ -58,10 +38,10 @@ responses:
           properties:
             status:
               type: integer
-              example: 201
+              example: 200
             message:
               type: string
-              example: 'Successfully created contact with id ${id}!'
+              example: 'Successfully patched a student!'
             data:
               type: object
               _id:
@@ -69,9 +49,11 @@ responses:
                 type: string
                 example: 65e4decdd286b30065d54af9
               allOf:
-                - $ref: '../../components/schemas/student.yaml'
+                - $ref: '../../../components/schemas/student.yaml'
                 - type: object
                   properties:
+                    name:
+                      example: "Ema Lawrence"
                     createdAt:
                       description: "Date when contact created"
                       type: string
@@ -84,7 +66,7 @@ responses:
     description: 'Unauthorized'
     content:
       application/json:
-          properties:
-            data:
-              type: object
-              $ref: "../../components/401.yaml"
+        properties:
+          data:
+            type: object
+            $ref: "../../../components/401.yaml"
