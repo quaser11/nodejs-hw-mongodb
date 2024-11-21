@@ -73,7 +73,7 @@
               data:
                 type: array
                 items:
-                  $ref: '../../components/schemas/student.yaml'
+                  $ref: '../../components/schemas/contact.yaml'
               total:
                 type: integer
                 description: Total number of contacts for the user

@@ -19,9 +19,31 @@ requestBody:
         type: object
         properties:
           name:
-            description: New name
+            description: "Contact's name"
             type: string
-            example: "Ema Lawrence"
+            example: John Doe
+          phoneNumber:
+            description: "Contact's phone number"
+            type: string
+            example: +380000000006
+          email:
+            description: "Contact's email"
+            type: string
+            example: andriy7@example.com
+          isFavourite:
+            description: "is contact in favourite"
+            type: boolean
+            example: true
+            default: false
+          contactType:
+            description: "Type of contact"
+            type: string
+            enum: [ 'work', 'home', 'personal' ]
+            default: 'personal'
+          photo:
+            description: "Photo file"
+            type: string
+            format: binary
 responses:
   '200':
     description: 'created contact'
@@ -49,7 +71,7 @@ responses:
                 type: string
                 example: 65e4decdd286b30065d54af9
               allOf:
-                - $ref: '../../../components/schemas/student.yaml'
+                - $ref: '../../../components/schemas/contact.yaml'
                 - type: object
                   properties:
                     name:

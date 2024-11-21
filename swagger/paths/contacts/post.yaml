@@ -1,6 +1,6 @@
 tags:
   - Contacts
-summary: Create cotact
+summary: Create contact
 operationId: createContact
 description: 'Create contact'
 security:
@@ -41,7 +41,6 @@ requestBody:
             description: "Photo file"
             type: string
             format: binary
-
 responses:
   '201':
     description: 'created contact'
@@ -69,7 +68,7 @@ responses:
                 type: string
                 example: 65e4decdd286b30065d54af9
               allOf:
-                - $ref: '../../components/schemas/student.yaml'
+                - $ref: '../../components/schemas/contact.yaml'
                 - type: object
                   properties:
                     createdAt:

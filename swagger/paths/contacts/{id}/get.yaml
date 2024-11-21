@@ -36,7 +36,7 @@ responses:
                 description: "Contact's id"
                 type: string
                 example: 65e4decdd286b30065d54af9
-              $ref: '../../../components/schemas/student.yaml'
+              $ref: '../../../components/schemas/contact.yaml'
               createdAt:
                 description: "Date when contact created"
                 type: string
